@@ -5,7 +5,7 @@ import type { Account, Chain, Client, Transport } from 'viem'
 import type { Config } from 'wagmi'
 import { useClient, useConnectorClient } from 'wagmi'
 import { getPublicClient, getWalletClient } from './utils'
-import { emitter } from './internal'
+import { emitter, proxy } from './internal'
 
 export interface ContractOptions<T> {
   interface: T
@@ -75,26 +75,44 @@ export function useEthersContract<T = any>(options: ContractOptions<T>) {
 }
 
 export function getEthersProvider() {
-  const publicClient = getPublicClient()
-  const provider = publicClient
-    ? clientToProvider(publicClient)
-    : undefined
-  return provider
+  const initObject = structure()
+  const { proxy: provider, update } = proxy<providers.FallbackProvider | providers.JsonRpcProvider>(initObject)
+  function structure() {
+    const publicClient = getPublicClient()
+    return publicClient
+      ? clientToProvider(publicClient)
+      : undefined
+  }
+  emitter.on('updated:public', () => update(structure()!))
+  return initObject ? provider : undefined
 }
 
 export function getEthersSigner() {
-  const walletClient = getWalletClient()
-  return walletClient
-    ? clientToSigner(walletClient)
-    : undefined
+  const initObject = structure()
+  const { proxy: signer, update } = proxy<providers.JsonRpcSigner>(initObject)
+  function structure() {
+    const walletClient = getWalletClient()
+    return walletClient
+      ? clientToSigner(walletClient)
+      : undefined
+  }
+  emitter.on('updated:wallet', () => update(structure()!))
+  return initObject ? signer : undefined
 }
 
 export function getEthersContract<T>(options: ContractOptions<T>) {
-  const contract = new Contract(
-    options.address || '0x0000000000000000000000000000000000000000',
-    options.interface as any,
-    getEthersSigner() || getEthersProvider(),
-  )
-
-  return contract as Contract & T
+  const { proxy: contract, update } = proxy<Contract & T>(structure())
+  function structure() {
+    const publicClient = getPublicClient()
+    const walletClient = getWalletClient()
+    const provider = publicClient ? clientToProvider(publicClient) : undefined
+    const signer = walletClient ? clientToSigner(walletClient) : undefined
+    return new Contract(
+      options.address || '0x0000000000000000000000000000000000000000',
+      options.interface as any,
+      signer || provider,
+    ) as Contract & T
+  }
+  emitter.on('*', () => update(structure()))
+  return contract
 }
