@@ -1,7 +1,7 @@
 {
   "name": "wagmi-ethers-adapters",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "packageManager": "pnpm@9.1.0",
   "description": "_description_",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
@@ -18,7 +18,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./ethers-v5": {
@@ -32,9 +32,10 @@
       "require": "./dist/ethers-v6.cjs"
     }
   },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "require": "./dist/index.cjs",
   "typesVersions": {
     "*": {
       "*": [
