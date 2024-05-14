@@ -59,12 +59,12 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "ethersv5": "npm:ethers@^5.0.32",
+    "ethersv5": "npm:ethers@^5",
     "ethersv6": "npm:ethers@^6",
-    "mitt": "^3.0.1",
-    "react": "^18.3.1",
-    "viem": "^2.10.5",
-    "wagmi": "^2.8.7"
+    "mitt": "^3",
+    "react": "^18",
+    "viem": "^2",
+    "wagmi": "^2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.17.0",
