@@ -60,6 +60,7 @@
   "dependencies": {
     "ethersv5": "npm:ethers@^5.0.32",
     "ethersv6": "npm:ethers@^6",
+    "mitt": "^3.0.1",
     "react": "^18.3.1",
     "viem": "^2.10.5",
     "wagmi": "^2.8.7"

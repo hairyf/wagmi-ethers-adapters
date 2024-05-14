@@ -4,6 +4,8 @@ import { BrowserProvider, Contract, FallbackProvider, JsonRpcProvider, JsonRpcSi
 import { useMemo } from 'react'
 import type { Account, Chain, Client, Transport } from 'viem'
 import { type Config, useClient, useConnectorClient } from 'wagmi'
+import { getPublicClient, getWalletClient } from './utils'
+import type { ContractOptions } from './ethers-v5'
 
 export function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client
@@ -31,8 +33,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
   const provider = new BrowserProvider(transport, network)
-  const signer = new JsonRpcSigner(provider, account.address)
-  return signer
+  return new JsonRpcSigner(provider, account.address)
 }
 
 /** Action to convert a viem Client to an ethers.js Provider. */
@@ -52,7 +53,11 @@ export function useEthersContract<T = any>(options: { address: string, interface
   const signer = useEthersSigner()
 
   function providerToContract(signerOrProvider?: Provider | Signer | undefined) {
-    return new Contract(options.address, options.interface as any, signerOrProvider)
+    return new Contract(
+      options.address || '0x0000000000000000000000000000000000000000',
+      options.interface as any,
+      signerOrProvider,
+    )
   }
 
   return useMemo(() => (
@@ -60,4 +65,30 @@ export function useEthersContract<T = any>(options: { address: string, interface
       ? providerToContract(signer)
       : providerToContract(provider)
   ), [provider, signer])
+}
+
+/**
+ * Static acquisition of wagmi provider
+ */
+export function getEthersProvider() {
+  const publicClient = getPublicClient()
+  return publicClient
+    ? clientToProvider(publicClient)
+    : undefined
+}
+
+export function getEthersSigner() {
+  const walletClient = getWalletClient()
+  return walletClient
+    ? clientToSigner(walletClient)
+    : undefined
+}
+
+export function getEthersContract<T>(options: ContractOptions<T>) {
+  const contract = new Contract(
+    options.address || '0x0000000000000000000000000000000000000000',
+    options.interface as any,
+    getEthersSigner() || getEthersProvider(),
+  )
+  return contract as Contract & T
 }
