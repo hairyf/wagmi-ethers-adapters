@@ -47,12 +47,12 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   return useMemo(() => (client ? clientToSigner(client) : undefined), [client])
 }
 
-export function useEthersContract<T = any>({ address, abi }: { address: string, abi: T }) {
+export function useEthersContract<T = any>(options: { address: string, interface: T }) {
   const provider = useEthersProvider()
   const signer = useEthersSigner()
 
   function providerToContract(signerOrProvider?: Provider | Signer | undefined) {
-    return new Contract(address, abi as any, signerOrProvider)
+    return new Contract(options.address, options.interface as any, signerOrProvider)
   }
 
   return useMemo(() => (
