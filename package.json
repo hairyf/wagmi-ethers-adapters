@@ -1,7 +1,7 @@
 {
   "name": "wagmi-ethers-adapters",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "packageManager": "pnpm@9.1.0",
   "description": "_description_",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
