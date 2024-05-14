@@ -75,33 +75,26 @@ export function useEthersContract<T = any>(options: ContractOptions<T>) {
 }
 
 export function getEthersProvider() {
-  const initObject = structure()
-  const { proxy: provider, update } = proxy<providers.FallbackProvider | providers.JsonRpcProvider>(initObject)
   function structure() {
     const publicClient = getPublicClient()
     return publicClient
       ? clientToProvider(publicClient)
       : undefined
   }
-  emitter.on('updated:public', () => update(structure()!))
-  return initObject ? provider : undefined
+  return structure()
 }
 
 export function getEthersSigner() {
-  const initObject = structure()
-  const { proxy: signer, update } = proxy<providers.JsonRpcSigner>(initObject)
   function structure() {
     const walletClient = getWalletClient()
     return walletClient
       ? clientToSigner(walletClient)
       : undefined
   }
-  emitter.on('updated:wallet', () => update(structure()!))
-  return initObject ? signer : undefined
+  return structure()
 }
 
 export function getEthersContract<T>(options: ContractOptions<T>) {
-  const { proxy: contract, update } = proxy<Contract & T>(structure())
   function structure() {
     const publicClient = getPublicClient()
     const walletClient = getWalletClient()
@@ -113,6 +106,5 @@ export function getEthersContract<T>(options: ContractOptions<T>) {
       signer || provider,
     ) as Contract & T
   }
-  emitter.on('*', () => update(structure()))
-  return contract
+  return structure()
 }
