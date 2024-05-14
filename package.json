@@ -50,7 +50,7 @@
     "build": "tsup",
     "dev": "tsup --watch src",
     "lint": "eslint .",
-    "prepublishOnly": "nr build",
+    "prepublishOnly": "npm run build",
     "release": "bumpp && npm publish",
     "start": "esno src/index.ts",
     "test": "vitest",
