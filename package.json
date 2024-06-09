@@ -1,7 +1,7 @@
 {
   "name": "wagmi-ethers-adapters",
   "type": "module",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "packageManager": "pnpm@9.1.0",
   "description": "_description_",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
@@ -58,11 +58,9 @@
     "typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
-  "peerDependencies": {
-    "viem": "^2",
-    "wagmi": "^2"
-  },
   "dependencies": {
+    "viem": "2.x",
+    "wagmi": "^2.9.0",
     "ethersv5": "npm:ethers@^5",
     "ethersv6": "npm:ethers@^6",
     "mitt": "^3",
